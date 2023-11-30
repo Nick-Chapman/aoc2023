@@ -9,16 +9,18 @@ import System.Environment (getArgs)
 import Text.Printf (printf)
 
 import qualified Day0
+import qualified Day1
 
 mains :: [(Int,IO ())]
-mains = zip [1..]
+mains = zip [0..]
   [ Day0.main
+  , Day1.main
   ]
 
 main :: IO ()
 main = do
   args <- getArgs
-  let selected = if args == [] then  [1..] else map read args
+  let selected = if args == [] then map fst mains else map read args
   let picked = [ x | x@(i,_) <- mains, i `elem` selected ]
   _info <- sequence [ timed day io | (day,io) <- picked ]
   if length picked > 1 then printTimings _info else pure ()
