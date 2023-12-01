@@ -8,13 +8,11 @@ import System.Clock (TimeSpec(..),getTime,Clock(Monotonic))
 import System.Environment (getArgs)
 import Text.Printf (printf)
 
-import qualified Day0
 import qualified Day1
 
 mains :: [(Int,IO ())]
-mains = zip [0..]
-  [ Day0.main
-  , Day1.main
+mains = zip [1..]
+  [ Day1.main
   ]
 
 main :: IO ()
