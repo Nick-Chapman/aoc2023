@@ -9,10 +9,12 @@ import System.Environment (getArgs)
 import Text.Printf (printf)
 
 import qualified Day1
+import qualified Day2
 
 mains :: [(Int,IO ())]
 mains = zip [1..]
   [ Day1.main
+  , Day2.main
   ]
 
 main :: IO ()
