@@ -2,7 +2,7 @@ module Day4 (main) where
 
 import Misc (check)
 import Par4 (Par,parse,separated,nl,key,ws1,int,terminated)
-import Data.Set as Set (size,fromList,intersection)
+import Set (size,fromList,intersection)
 
 main :: IO ()
 main = do

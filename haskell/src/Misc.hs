@@ -3,7 +3,7 @@ module Misc (check,collate,look,splitOn,the,hist,nub) where
 
 import Data.Map (Map)
 import qualified Data.Map as Map
-import qualified Data.Set as Set
+import qualified Set
 
 check :: (Eq a, Show a) => a -> a -> a
 check a b = if a == b then a else error ("check failed: " ++ show a ++ " not same as: " ++ show b)
