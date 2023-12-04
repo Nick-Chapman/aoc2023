@@ -36,9 +36,7 @@ intersection x y = if size x < size y then f x y else f y x
       fromList [ x | x <- toList smaller, x `member` bigger ]
 
 difference :: Ord a => Set a -> Set a -> Set a
---difference = undefined
---difference x y = fromList [ e | e <- toList x, not (e `member` y) ]
-difference x y = foldr delete x (toList y) -- ???
+difference x y = fromList [ e | e <- toList x, not (e `member` y) ] -- not tried yet
 
 data Set a
   = Empty
@@ -48,7 +46,7 @@ data Set a
          , sizeNode :: Int
          , heightNode :: Int
          }
-    deriving (Eq,Ord) -- ok?
+    deriving (Eq,Ord)
 
 null :: Set a -> Bool
 null = \case
@@ -90,10 +88,7 @@ member x = \case
     x == e || member x (if x < e then l else r)
 
 insert :: Ord a => a -> Set a -> Set a
-insert x set = if x `member` set then set else insert' x set -- helps?
-
-insert' :: Ord a => a -> Set a -> Set a
-insert' x = \case
+insert x = \case
   Empty -> singleton x
   n@Node{left=l,elem=e,right=r} -> if x == e then n else
     if x < e then mkNode (insert x l) e r else
@@ -109,7 +104,8 @@ mkNode l e r = case (l,r) of { (Empty,Empty) -> singleton e ; _ -> do
     then
       case r of
         Empty -> undefined -- impossible: height(r) >= 2
-        Node {left=rl,elem=re,right=rr} -> nodeSH (nodeSH l e rl) re rr
+        Node {left=rl,elem=re,right=rr} ->
+          nodeSH (nodeSH l e rl) re rr
     else
       case l of
         Empty -> undefined  -- impossible: height(l) >= 2
@@ -142,3 +138,29 @@ abut = \case
   (Node{left=l1,elem=e1,right=r1}, Node{left=l2,elem=e2,right=r2}) -> do
     -- assert (e1 < e2)
     mkNode l1 e1 (mkNode (abut (r1,l2)) e2 r2)
+
+-- WIP...
+-- prim def for union -- currently broken! -- and use for insert
+
+_insertB :: Ord a => a -> Set a -> Set a
+_insertB x set = singleton x `unionB` set
+
+unionB :: Ord a => Set a -> Set a -> Set a
+unionB s1 s2 =
+  case s1 of
+    Empty{} -> s2
+    Node{left=l1,elem=e1,right=r1} ->
+      case s2 of
+        Empty -> s1
+        Node{left=l2,elem=e2,right=r2} ->
+          if e1 == e2
+          then undefined
+          else if e1 < e2
+               -- broken because...
+               then
+                 -- some elements in r1 might be smaller than e1
+                 -- and some elements in l2 might be bigger than e2
+                 mkNode (mkNode l1 e1 (r1 `unionB` l2)) e2 r2
+
+               else
+                 mkNode (mkNode l2 e2 (r2 `unionB` l1)) e1 r1
