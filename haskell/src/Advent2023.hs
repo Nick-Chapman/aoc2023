@@ -11,12 +11,14 @@ import Text.Printf (printf)
 import qualified Day1
 import qualified Day2
 import qualified Day3
+import qualified Day4
 
 mains :: [(Int,IO ())]
 mains = zip [1..]
   [ Day1.main
   , Day2.main
   , Day3.main
+  , Day4.main
   ]
 
 main :: IO ()
