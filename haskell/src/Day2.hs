@@ -7,10 +7,10 @@ main :: IO ()
 main = do
   sam1 <- readFile "../input/day2-sample.input"
   inp <- readFile "../input/day2.input"
-  print ("day1, part1 (sam)", check [1,2,5] $ part1 (parse gram sam1))
-  print ("day1, part1", check 2716 $ sum (part1 (parse gram inp)))
-  print ("day1, part2 (sam)", check 2286 $ sum (part2 (parse gram sam1)))
-  print ("day1, part2", check 72227 $ sum (part2 (parse gram inp)))
+  print ("day2, part1 (sam)", check [1,2,5] $ part1 (parse gram sam1))
+  print ("day2, part1", check 2716 $ sum (part1 (parse gram inp)))
+  print ("day2, part2 (sam)", check 2286 $ sum (part2 (parse gram sam1)))
+  print ("day2, part2", check 72227 $ sum (part2 (parse gram inp)))
 
 part1 :: [Game] -> [Int]
 part1 gs =

@@ -7,10 +7,10 @@ main :: IO ()
 main = do
   sam <- readFile "../input/day3-sample.input"
   inp <- readFile "../input/day3.input"
-  print ("day1, part1 (sam)", check 4361 $ sum (part1 sam))
-  print ("day1, part1", check 553079 $ sum (part1 inp))
-  print ("day1, part2 (sam)", check 467835 $ sum (part2 sam))
-  print ("day1, part2", check 84363105 $ sum (part2 inp))
+  print ("day3, part1 (sam)", check 4361 $ sum (part1 sam))
+  print ("day3, part1", check 553079 $ sum (part1 inp))
+  print ("day3, part2 (sam)", check 467835 $ sum (part2 sam))
+  print ("day3, part2", check 84363105 $ sum (part2 inp))
 
 type Pos = (Int,Int)
 data Entry = Entry { pos :: Pos, len :: Int, num :: Int } deriving Show
