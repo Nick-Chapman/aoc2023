@@ -42,7 +42,6 @@ difference x y = foldr delete x (toList y) -- ???
 
 data Set a
   = Empty
-  | Single a -- not required; just optimized rep
   | Node { left :: Set a
          , elem :: a
          , right :: Set a
@@ -54,14 +53,13 @@ data Set a
 null :: Set a -> Bool
 null = \case
   Empty{} -> True
-  Single{} -> False
   Node{} -> False
 
 empty :: Set a
 empty = Empty
 
-singleton :: a -> Set a
-singleton = Single
+singleton :: Ord a => a -> Set a
+singleton x = nodeSH empty x empty
 
 toList :: Set a -> [a]
 toList = walk []
@@ -69,20 +67,17 @@ toList = walk []
     walk :: [a] -> Set a -> [a]
     walk after = \case
       Empty -> after
-      Single e -> e : after
       Node{left=l,elem=e,right=r} ->
         walk (e : walk after r) l
 
 size :: Set a -> Int
 size = \case
   Empty -> 0
-  Single{} -> 1
   Node{sizeNode=x} -> x
 
 height :: Set a -> Int
 height = \case
   Empty -> 0
-  Single{} -> 1
   Node{heightNode=x} -> x
 
 notMember :: Ord a => a -> Set a -> Bool
@@ -91,7 +86,6 @@ notMember x = not . member x
 member :: Ord a => a -> Set a -> Bool
 member x = \case
   Empty -> False
-  Single e -> x==e
   Node{left=l,elem=e,right=r} ->
     x == e || member x (if x < e then l else r)
 
@@ -101,31 +95,24 @@ insert x set = if x `member` set then set else insert' x set -- helps?
 insert' :: Ord a => a -> Set a -> Set a
 insert' x = \case
   Empty -> singleton x
-  n@(Single e) -> if x == e then n else if x < e then twoSet x e else twoSet e x
   n@Node{left=l,elem=e,right=r} -> if x == e then n else
     if x < e then mkNode (insert x l) e r else
     -- assert (x > e)
     mkNode l e (insert x r)
 
-twoSet :: Ord a => a -> a -> Set a
-twoSet x y = -- x<y
-  nodeSH empty x (singleton y)
-
 -- rebalance during node construction
 mkNode :: Ord a => Set a -> a -> Set a -> Set a
-mkNode l e r = case (l,r) of { (Empty,Empty) -> Single e ; _ -> do
+mkNode l e r = case (l,r) of { (Empty,Empty) -> singleton e ; _ -> do
   let u = height l - height r
   if u <=1 && u >= -1 then nodeSH l e r else
     if u < 0
     then
       case r of
         Empty -> undefined -- impossible: height(r) >= 2
-        Single{} -> undefined -- impossible: height(r) >= 2
         Node {left=rl,elem=re,right=rr} -> nodeSH (nodeSH l e rl) re rr
     else
       case l of
         Empty -> undefined  -- impossible: height(l) >= 2
-        Single{} -> undefined -- impossible: height(l) >= 2
         Node {left=ll,elem=le,right=lr} ->
           nodeSH ll le (nodeSH lr e r) }
 
@@ -141,7 +128,6 @@ nodeSH left elem right =
 delete :: Ord a => a -> Set a -> Set a
 delete x = \case
   Empty -> Empty
-  n@(Single e) -> if x==e then empty else n
   Node {left=l,elem=e,right=r} ->
     if x < e then mkNode (delete x l) e r else
     if x > e then mkNode l e (delete x r) else
@@ -153,10 +139,6 @@ abut = \case
   (Empty,Empty) -> Empty
   (Empty,set) -> set
   (set,Empty) -> set
-  (Single e1,Single e2) -> twoSet e1 e2
-  (Single e1,n2@Node{}) -> mkNode empty e1 n2
-  (n1@Node{},Single e2) -> mkNode n1 e2 empty
-
   (Node{left=l1,elem=e1,right=r1}, Node{left=l2,elem=e2,right=r2}) -> do
     -- assert (e1 < e2)
     mkNode l1 e1 (mkNode (abut (r1,l2)) e2 r2)
