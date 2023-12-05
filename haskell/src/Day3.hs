@@ -2,6 +2,8 @@ module Day3 (main) where
 
 import Misc (check,collate)
 import Data.Char (isDigit)
+import Set (Set,member)
+import qualified Set (fromList)
 
 main :: IO ()
 main = do
@@ -17,23 +19,23 @@ data Entry = Entry { pos :: Pos, len :: Int, num :: Int } deriving Show
 
 part1 :: String -> [Int]
 part1 s = do
-  let symbolPositions :: [Pos] = concat
+  let symbolPositions :: Set Pos = Set.fromList $ concat
         [ [ (x,y) | (x,c) <- zip [0..] line, not (isDigit c || c == '.') ]
         | (y,line) <- zip [0..] (lines s)
         ]
   [ num | e@Entry{num} <- entries s
-        , let ps = filter (`elem` symbolPositions) (adj e)
+        , let ps = filter (`member` symbolPositions) (adj e)
         , ps /= [] ]
 
 part2 :: String -> [Int]
 part2 s = do
-  let starPositions :: [Pos] = concat
+  let starPositions :: Set Pos = Set.fromList $ concat
         [ [ (x,y) | (x,c) <- zip [0..] line, c == '*' ]
         | (y,line) <- zip [0..] (lines s)
         ]
   [ (n1*n2) | (_,[n1,n2]) <- collate [ (p,num)
                                      | e@Entry{num} <- entries s
-                                     , let ps = filter (`elem` starPositions) (adj e)
+                                     , let ps = filter (`member` starPositions) (adj e)
                                      , p <- ps ] ]
 
 entries :: String -> [Entry]
