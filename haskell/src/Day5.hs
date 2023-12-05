@@ -13,15 +13,10 @@ main = do
   print ("day5, part2", check 20283860 $ part2 inp)
 
 part1 :: Setup -> Int
-part1 (Setup xs ms) = minimum [ appMs1 ms x | x <- xs ]
+part1 (Setup xs ms) = minimum [ foldl appM1 x ms | x <- xs ]
 
-appMs1 :: [M] -> Int -> Int
-appMs1 ms x = case ms of
-  [] -> x
-  m:ms -> appMs1 ms (appM1 m x)
-
-appM1 :: M -> Int -> Int
-appM1 (M trips) x = loop trips
+appM1 :: Int -> M -> Int
+appM1 x (M trips) = loop trips
   where
     loop = \case
       [] -> x
@@ -31,7 +26,7 @@ appM1 (M trips) x = loop trips
 
 part2 :: Setup -> Int
 part2 (Setup xs ms) = do
-  minimum [ x | R x _ <- appMsR ms (makeRanges xs) ]
+  minimum [ x | R x _ <- foldl appMR (makeRanges xs) ms ]
   where
     makeRanges = \case
       [] -> []
@@ -41,13 +36,8 @@ part2 (Setup xs ms) = do
 data R = R Int Int
 instance Show R where show (R x y) = show x ++ ".." ++ show y
 
-appMsR :: [M] -> [R] -> [R]
-appMsR ms rs = case ms of
-  [] -> rs
-  m:ms -> appMsR ms (appMR m rs)
-
-appMR :: M -> [R] -> [R]
-appMR (M trips) rs = concat [ loop r trips | r <- rs ]
+appMR :: [R] -> M -> [R]
+appMR rs (M trips) = concat [ loop r trips | r <- rs ]
   where
     loop r trips =
       if isEmpty r then [] else
