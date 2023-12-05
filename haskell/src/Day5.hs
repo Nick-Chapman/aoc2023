@@ -13,16 +13,17 @@ main = do
   print ("day5, part2", check 20283860 $ part2 inp)
 
 part1 :: Setup -> Int
-part1 (Setup xs ms) = minimum [ foldl appM1 x ms | x <- xs ]
+--part1 (Setup xs ms) = minimum [ foldl appM1 x ms | x <- xs ]
+part1 (Setup xs ms) = part2 (Setup ys ms) where ys = concat [ [x,1] | x <- xs ]
 
-appM1 :: Int -> M -> Int
+{-appM1 :: Int -> M -> Int
 appM1 x (M trips) = loop trips
   where
     loop = \case
       [] -> x
       (d,s,l):trips -> do
         let n = x-s
-        if n>=0 && n < l then d+n else loop trips
+        if n>=0 && n < l then d+n else loop trips-}
 
 part2 :: Setup -> Int
 part2 (Setup xs ms) = do
