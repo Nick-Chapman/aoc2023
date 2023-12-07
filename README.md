@@ -8,6 +8,7 @@
 [day4](haskell/src/Day4.hs)
 [day5](haskell/src/Day5.hs)
 [day6](haskell/src/Day6.hs)
+[day7](haskell/src/Day7.hs)
 
 ## Descriptions and Solutions:
 - Day 1: Trebuchet?! [desc](https://adventofcode.com/2023/day/1) [solution](haskell/src/Day1.hs)
@@ -16,3 +17,4 @@
 - Day 4: Scratchcards [desc](https://adventofcode.com/2023/day/4) [solution](haskell/src/Day4.hs)
 - Day 5: If You Give A Seed A Fertilizer [desc](https://adventofcode.com/2023/day/5) [solution](haskell/src/Day5.hs)
 - Day 6: Wait For It [desc](https://adventofcode.com/2023/day/6) [solution](haskell/src/Day6.hs)
+- Day 7: Camel Cards [desc](https://adventofcode.com/2023/day/7) [solution](haskell/src/Day7.hs)
