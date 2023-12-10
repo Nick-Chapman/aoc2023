@@ -11,6 +11,7 @@
 [day7](haskell/src/Day7.hs)
 [day8](haskell/src/Day8.hs)
 [day9](haskell/src/Day9.hs)
+[day10](haskell/src/Day10.hs)
 
 ## Descriptions and Solutions:
 - Day 1: Trebuchet?! [desc](https://adventofcode.com/2023/day/1) [solution](haskell/src/Day1.hs)
@@ -22,3 +23,4 @@
 - Day 7: Camel Cards [desc](https://adventofcode.com/2023/day/7) [solution](haskell/src/Day7.hs)
 - Day 8: Haunted Wasteland [desc](https://adventofcode.com/2023/day/8) [solution](haskell/src/Day8.hs)
 - Day 9: Mirage Maintenance [desc](https://adventofcode.com/2023/day/9) [solution](haskell/src/Day9.hs)
+- Day 10: Pipe Maze [desc](https://adventofcode.com/2023/day/10) [solution](haskell/src/Day10.hs)
