@@ -1,5 +1,5 @@
 
-module Misc (check,collate,look,splitOn,the,hist,nub) where
+module Misc (check,collate,look,splitOn,the,hist,nub,pairwise) where
 
 import Data.Map (Map)
 import qualified Data.Map as Map
@@ -32,3 +32,8 @@ hist = Map.fromListWith (+) . map (\k -> (k,1))
 
 nub :: Ord a => [a] -> [a]
 nub = Set.toList . Set.fromList
+
+pairwise :: [a] -> [(a,a)]
+pairwise = \case
+  [] -> []
+  x1:xs -> [ (x1,x2) | x2 <- xs ] ++ pairwise xs
