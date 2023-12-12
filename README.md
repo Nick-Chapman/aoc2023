@@ -13,6 +13,7 @@
 [day9](haskell/src/Day9.hs)
 [day10](haskell/src/Day10.hs)
 [day11](haskell/src/Day11.hs)
+[day12](haskell/src/Day12.hs)
 
 ## Descriptions and Solutions:
 - Day 1: Trebuchet?! [desc](https://adventofcode.com/2023/day/1) [solution](haskell/src/Day1.hs)
@@ -26,3 +27,4 @@
 - Day 9: Mirage Maintenance [desc](https://adventofcode.com/2023/day/9) [solution](haskell/src/Day9.hs)
 - Day 10: Pipe Maze [desc](https://adventofcode.com/2023/day/10) [solution](haskell/src/Day10.hs)
 - Day 11: Cosmic Expansion [desc](https://adventofcode.com/2023/day/11) [solution](haskell/src/Day11.hs)
+- Day 12: Hot Springs [desc](https://adventofcode.com/2023/day/12) [solution](haskell/src/Day12.hs)
