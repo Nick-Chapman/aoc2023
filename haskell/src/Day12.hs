@@ -84,14 +84,19 @@ countChunks (Chunks xss ns) = do
         [hqs] -> countHQs hqs ns
         _:_ -> do
           let (xss1,xss2) = divide xss
-          sum [ mul
+          sum [ mulFlipWhen (length ns2 < length ns1)
                 (countChunks (Chunks xss1 ns1))
                 (countChunks (Chunks xss2 ns2))
               | (ns1,ns2) <- splits ns
               ]
 
+mulFlipWhen :: Bool -> Int -> Int -> Int
+mulFlipWhen False x y = mul x y
+mulFlipWhen True x y = mul y x
+
+
 mul :: Int -> Int -> Int
-mul 0 _ = 0
+mul 0 _ = 0 -- TODO: dont like this asymmetry
 mul a b = a * b
 
 divide :: [a] -> ([a],[a])
@@ -103,6 +108,7 @@ divide = \case
 
 countHQs :: [HQ] -> [Int] -> Int
 countHQs xs ns =
+  --if sum ns > length xs then 0 else
   case ns of
     [] -> if any (==H) xs then 0 else 1::Int
     _:_ -> do
@@ -110,7 +116,7 @@ countHQs xs ns =
       case ns2 of
         [] -> error "impossible"
         nPick:ns2 -> do
-          sum [ mul
+          sum [ mulFlipWhen (length ns2 < length ns1)
                 (countHQs xs1 ns1)
                 (countHQs xs2 ns2)
               | (xs1,xs2) <- splitHashN0 nPick xs
