@@ -43,7 +43,7 @@ rep5 (Line xs ns) = Line xs' ns'
     ns' = concat (take 5 (repeat ns))
 
 countFast :: Line -> Int
-countFast (Line xs ns) = lookup 0 0 0
+countFast (Line xs ns) = compute 0 0 0
   where
     -- x: index into cells list
     -- n: index into counts (of contiguous damaged) list
@@ -53,15 +53,17 @@ countFast (Line xs ns) = lookup 0 0 0
     nMax = length ns
     kMax = maximum ns
 
+    r = ((0,0,0),(xMax,nMax,kMax))
+
     a :: Array (Int,Int,Int) Int
-    a = array ((0,0,0),(xMax,nMax,kMax)) [ ((x,n,k), compute x n k)
-                                         | x <- [0..xMax] , n <- [0..nMax] , k <- [0..kMax]
-                                         ]
+    a = array r [ ((x,n,k), compute x n k) | x <- [0..xMax], n <- [0..nMax], k <- [0..kMax]]
+    --a = array r [ ((x,n,k), compute x n k) | (x,n,k) <- range r ] -- 2x worse. why?
+
     lookup :: Int -> Int -> Int -> Int
     lookup x n k = a!(x,n,k)
 
     compute :: Int -> Int -> Int -> Int
-    compute x n k =
+    compute = \x n k ->
       if | x == xMax ->
             if | k==0 -> if n==nMax then 1 else 0
                | otherwise -> if n==nMax && k==1 then 1 else 0
