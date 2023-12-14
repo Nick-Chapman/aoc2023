@@ -15,6 +15,7 @@
 [day11](haskell/src/Day11.hs)
 [day12](haskell/src/Day12.hs)
 [day13](haskell/src/Day13.hs)
+[day14](haskell/src/Day14.hs)
 
 ## Descriptions and Solutions:
 - Day 1: Trebuchet?! [desc](https://adventofcode.com/2023/day/1) [solution](haskell/src/Day1.hs)
@@ -30,3 +31,4 @@
 - Day 11: Cosmic Expansion [desc](https://adventofcode.com/2023/day/11) [solution](haskell/src/Day11.hs)
 - Day 12: Hot Springs [desc](https://adventofcode.com/2023/day/12) [solution](haskell/src/Day12.hs)
 - Day 13: Point of Incidence [desc](https://adventofcode.com/2023/day/13) [solution](haskell/src/Day13.hs)
+- Day 14: Parabolic Reflector Dish [desc](https://adventofcode.com/2023/day/14) [solution](haskell/src/Day14.hs)
