@@ -52,7 +52,7 @@ countA grid b = do
     step = induce grid
     shine :: Set Beam -> Beam -> Set Beam
     shine acc b = do
-      if b `elem` acc then acc else do
+      if b `Set.member` acc then acc else do
         foldl shine (Set.insert b acc) (step b)
 
 activated :: Set Beam -> Set Pos
