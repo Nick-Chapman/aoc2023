@@ -1,10 +1,16 @@
+{-# LANGUAGE DeriveAnyClass #-}
+
 module Day16 (main) where
 
 import Data.Array (Array,array,(!))
+import Data.HashSet (HashSet)
+import Data.Hashable (Hashable)
+import GHC.Generics (Generic)
 import Misc (check)
 import Par4 (Par,parse,separated,many,lit,alts,nl)
-import Set (Set)
-import qualified Set
+import qualified Data.HashSet as Set
+
+type Set = HashSet
 
 gram :: Par Grid
 gram = separated nl (many cell)
@@ -60,7 +66,7 @@ activated set = Set.fromList [ p | (p,_) <- Set.toList set ]
 
 type Beam = (Pos,Dir)
 type Pos = (Int,Int)
-data Dir = L | R | U | D deriving (Show,Eq,Ord)
+data Dir = L | R | U | D deriving (Show,Eq,Ord,Hashable,Generic)
 
 induce :: Grid -> (Beam -> [Beam])
 induce grid = do

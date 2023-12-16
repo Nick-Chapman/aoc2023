@@ -17,16 +17,19 @@ dependencies:
 - containers
 - extra
 - haskeline
+- hashable
 - mtl
 - split
 - text
 - time
 - transformers
+- unordered-containers
 - word8
 - EarleyM
 
 default-extensions:
 - BangPatterns
+- DeriveGeneric
 - DuplicateRecordFields
 - EmptyCase
 - FlexibleContexts
