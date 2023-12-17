@@ -1,13 +1,23 @@
+{-# LANGUAGE DeriveAnyClass #-}
 
 module Day17 (main) where
 
 import Data.Array (Array,array,(!))
 import Misc (check)
 import Par4 (Par,parse,separated,many,nl,digit)
-import Set (Set)
-import qualified Set -- TODO: HashSet is quicker?
-
 import Control.Monad (when)
+import GHC.Generics (Generic)
+import Data.Hashable (Hashable)
+
+-- Order based sets:
+import Set (Set)
+import qualified Set
+
+-- Hash based sets: (very slightly slower!)
+-- import Data.HashSet (HashSet)
+-- import qualified Data.HashSet as Set
+-- type Set = HashSet
+
 
 gram :: Par Grid
 gram = separated nl (many digit)
@@ -51,7 +61,7 @@ explore part grid = loop 1 states
         when (i `mod` 10000 == 0) $ print (i,head q)
         case q of
           [] -> error "empty-q"
-          (Cost res,(pos,_)):_ -> do
+          (res,(pos,_)):_ -> do
             if pos /= endPos then loop (i+1) states else do
               print i
               pure res
@@ -83,7 +93,7 @@ mkStep part pMax costF = do
       [ ((pos',dir'), cost)
         | n <- [a::Int .. min b (maxStep pMax node) ]
         , let (cover,pos') = stride (adj pos dir) (n-1) dir []
-        , let cost = Cost $ sum (map costF cover) -- TODO: share sum over strides
+        , let cost = sum (map costF cover) -- TODO: share sum over strides
         , dir' <- turns dir
         ]
   step
@@ -102,9 +112,10 @@ stride p n dir acc =
 adj :: Pos -> Dir -> Pos
 adj (x,y) = \case L -> (x-1,y); R -> (x+1,y); U -> (x,y-1); D -> (x,y+1)
 
-newtype Cost = Cost Int deriving (Show,Num,Eq,Ord)
+--newtype Cost = Cost Int deriving (Show,Num,Eq,Ord)
+type Cost = Int
 
-data Dir = U | D | L | R deriving (Eq,Ord,Show)
+data Dir = U | D | L | R deriving (Eq,Ord,Show,Hashable,Generic)
 type Pos = (Int,Int)
 type Node = (Pos,Dir)
 
@@ -121,7 +132,7 @@ pushQ q (c,n) =
           x : pushQ q' (c,n)
 
 state0 :: [Node] -> State
-state0 ns = State { v = Set.empty, q = [ (Cost 0, n) | n <- ns ] }
+state0 ns = State { v = Set.empty, q = [ (0, n) | n <- ns ] }
 
 search :: (Node -> [(Node,Cost)]) -> State -> [State]
 search step = loop
@@ -135,6 +146,6 @@ search step = loop
             let q' = foldl pushQ q
                   [ ( c1+c2, n')
                   | (n',c2) <- step nodeSelected
-                  , n' `Set.notMember` v
+                  , not (n' `Set.member` v)
                   ]
             loop State { v = Set.insert nodeSelected v, q = q' }
