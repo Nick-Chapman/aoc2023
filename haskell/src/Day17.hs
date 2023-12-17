@@ -31,16 +31,16 @@ main = do
   _inp <- load "../input/day17.input"
 
   sam1 <- explore Part1 sam
-  print ("day16, part1 (sam)", check 102 $ sam1)
+  print ("day17, part1 (sam)", check 102 $ sam1)
 
   inp1 <- explore Part1 _inp -- 8.5s
-  print ("day16, part1", check 817 $ inp1)
+  print ("day17, part1", check 817 $ inp1)
 
   sam2 <- explore Part2 sam
-  print ("day16, part2 (sam)", check 94 $ sam2)
+  print ("day17, part2 (sam)", check 94 $ sam2)
 
   --inp2 <- explore Part2 _inp -- 77s
-  --print ("day16, part2", check 925 $ inp2)
+  --print ("day17, part2", check 925 $ inp2)
 
 
 data Part = Part1 | Part2
