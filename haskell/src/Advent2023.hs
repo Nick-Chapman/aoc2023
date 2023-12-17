@@ -24,6 +24,7 @@ import qualified Day13
 import qualified Day14
 import qualified Day15
 import qualified Day16
+import qualified Day17
 
 mains :: [(Int,IO ())]
 mains = zip [1..]
@@ -43,6 +44,7 @@ mains = zip [1..]
   , Day14.main
   , Day15.main
   , Day16.main
+  , Day17.main
   ]
 
 main :: IO ()

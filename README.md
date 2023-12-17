@@ -18,6 +18,7 @@
 [day14](haskell/src/Day14.hs)
 [day15](haskell/src/Day15.hs)
 [day16](haskell/src/Day16.hs)
+[day17](haskell/src/Day17.hs)
 
 ## Descriptions and Solutions:
 - Day 1: Trebuchet?! [desc](https://adventofcode.com/2023/day/1) [solution](haskell/src/Day1.hs)
@@ -36,3 +37,4 @@
 - Day 14: Parabolic Reflector Dish [desc](https://adventofcode.com/2023/day/14) [solution](haskell/src/Day14.hs)
 - Day 15: Lens Library [desc](https://adventofcode.com/2023/day/15) [solution](haskell/src/Day15.hs)
 - Day 16: The Floor Will Be Lava [desc](https://adventofcode.com/2023/day/16) [solution](haskell/src/Day16.hs)
+- Day 17: Clumsy Crucible [desc](https://adventofcode.com/2023/day/17) [solution](haskell/src/Day17.hs)
