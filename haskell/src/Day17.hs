@@ -92,22 +92,28 @@ mkStep part pMax costF = do
     step (pos,oldDir) = do
       [ ((posAfter,dir), cost)
         | dir <- turns oldDir
-        , n <- [a::Int .. min b (maxStep pMax (pos,dir)) ]
-        , let (cover,posAfter) = stride (adj pos dir) (n-1) dir []
-        , let cost = sum (map costF cover) -- TODO: share sum over strides
+        , (posAfter,cost) <- strides (a,b) pMax costF pos dir
         ]
   step
 
 turns :: Dir -> [Dir]
 turns = \case U -> [L,R]; D -> [L,R]; L -> [U,D]; R -> [U,D]
 
+strides :: (Int,Int) -> Pos -> (Pos -> Int) -> Pos -> Dir -> [(Pos,Cost)]
+strides (a,b) pMax costF pos dir = do
+  let n = min b (maxStep pMax (pos,dir))
+  drop (a-1) $ scanSumCost 0
+    [ (pos,costF pos)
+    | pos <- take n $ tail $ iterate (flip adj dir) pos
+    ]
+
+scanSumCost :: Cost -> [(Pos,Cost)] -> [(Pos,Cost)]
+scanSumCost acc = \case
+  [] -> []
+  (p,c):xs -> let acc' = acc+c in (p,acc') : scanSumCost acc' xs
+
 maxStep :: Pos -> Node -> Int
 maxStep (w,h) ((x,y),dir) = case dir of U -> y-1; D -> h-y; L -> x-1; R -> w-x
-
-stride :: Pos -> Int -> Dir -> [Pos] -> ([Pos],Pos)
-stride p n dir acc =
-  if n == 0 then (p:acc,p) else
-    stride (adj p dir) (n-1) dir (p:acc)
 
 adj :: Pos -> Dir -> Pos
 adj (x,y) = \case L -> (x-1,y); R -> (x+1,y); U -> (x,y-1); D -> (x,y+1)
