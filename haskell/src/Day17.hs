@@ -7,6 +7,8 @@ import Par4 (Par,parse,separated,many,nl,digit)
 import Set (Set)
 import qualified Set -- TODO: HashSet is quicker?
 
+import Control.Monad (when)
+
 gram :: Par Grid
 gram = separated nl (many digit)
 
@@ -19,48 +21,64 @@ main = do
   _inp <- load "../input/day17.input"
 
   sam1 <- explore Part1 sam
-  inp1 <- explore Part1 _inp -- 12s
-  sam2 <- explore Part2 sam
-  --inp2 <- explore Part2 _inp -- 138s
-
   print ("day16, part1 (sam)", check 102 $ sam1)
+
+  inp1 <- explore Part1 _inp -- 12s
   print ("day16, part1", check 817 $ inp1)
+
+  sam2 <- explore Part2 sam
   print ("day16, part2 (sam)", check 94 $ sam2)
+
+  --inp2 <- explore Part2 _inp -- 138s
   --print ("day16, part2", check 925 $ inp2)
 
-  pure ()
+
+data Part = Part1 | Part2
+balanceParams :: Part -> (Int,Int)
+balanceParams = \case Part1 -> (1,3); Part2 -> (4,10)
+
 
 explore :: Part -> Grid -> IO Int
-explore part grid = do
-  let h = length grid
-  let w = length (head grid)
+explore part grid = loop 1 states
+  where
+    endPos = sizeGrid grid
+    states = searchGrid part grid
+
+    loop :: Int -> [State] -> IO Int
+    loop i = \case
+      [] -> error "no-more-states"
+      State{q}:states -> do
+        when (i `mod` 10000 == 0) $ print (i,head q)
+        case q of
+          [] -> error "empty-q"
+          (Cost res,(pos,_)):_ -> do
+            if pos /= endPos then loop (i+1) states else do
+              print i
+              pure res
+
+
+sizeGrid :: Grid -> Pos
+sizeGrid grid = (w,h)
+  where
+    h = length grid
+    w = length (head grid)
+
+searchGrid :: Part -> Grid -> [State]
+searchGrid part grid = do
+  let endPos@(w,h) = sizeGrid grid
   let a :: Array Pos Int
       a = array ((1,1),(w,h))
         [ ((x,y),cell) | (y,line) <- zip [1::Int ..] grid
                        , (x,cell) <- zip [1::Int ..] line ]
   let cost :: Pos -> Int = (a!)
   let ns0 :: [Node] = [ ((1,1),R), ((1,1),D) ]
-  let step :: Node -> [(Node,Cost)] = mkStep part (w,h) cost
-  let res = search step (state0 ns0)
-  let isDone :: Pos -> Bool
-      isDone (x,y) = x == w && y == h
-  let f :: State -> Bool
-      f State{q} = case q of [] -> False; (_,(pos,_)):_ -> not (isDone pos)
-  let (_pre,post) = span f res
-  --mapM_ print $ zip [1::Int ..] [ x | State{q=x:_} <- _pre]
-  --print (length _pre)
-  --mapM_ print $ zip [1::Int ..] [ x | State{q=x:_} <- take 1 post]
-  let State{q} = head post
-  let x = head q
-  let (Cost res,_) = x
-  pure res
-
-data Part = Part1 | Part2
+  let step :: Node -> [(Node,Cost)] = mkStep part endPos cost
+  search step (state0 ns0)
 
 mkStep :: Part -> Pos -> (Pos -> Int) -> (Node -> [(Node,Cost)])
 mkStep part pMax costF = do
   let
-    (a,b) = case part of Part1 -> (1,3); Part2 -> (4,10)
+    (a,b) = balanceParams part
     step node@(pos,dir) = do
       [ ((pos',dir'), cost)
         | n <- [a::Int .. min b (maxStep pMax node) ]
