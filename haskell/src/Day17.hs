@@ -33,13 +33,13 @@ main = do
   sam1 <- explore Part1 sam
   print ("day16, part1 (sam)", check 102 $ sam1)
 
-  inp1 <- explore Part1 _inp -- 12s
+  inp1 <- explore Part1 _inp -- 8.5s
   print ("day16, part1", check 817 $ inp1)
 
   sam2 <- explore Part2 sam
   print ("day16, part2 (sam)", check 94 $ sam2)
 
-  --inp2 <- explore Part2 _inp -- 138s
+  --inp2 <- explore Part2 _inp -- 77s
   --print ("day16, part2", check 925 $ inp2)
 
 
@@ -89,12 +89,12 @@ mkStep :: Part -> Pos -> (Pos -> Int) -> (Node -> [(Node,Cost)])
 mkStep part pMax costF = do
   let
     (a,b) = balanceParams part
-    step node@(pos,dir) = do
-      [ ((pos',dir'), cost)
-        | n <- [a::Int .. min b (maxStep pMax node) ]
-        , let (cover,pos') = stride (adj pos dir) (n-1) dir []
+    step (pos,oldDir) = do
+      [ ((posAfter,dir), cost)
+        | dir <- turns oldDir
+        , n <- [a::Int .. min b (maxStep pMax (pos,dir)) ]
+        , let (cover,posAfter) = stride (adj pos dir) (n-1) dir []
         , let cost = sum (map costF cover) -- TODO: share sum over strides
-        , dir' <- turns dir
         ]
   step
 
@@ -112,9 +112,7 @@ stride p n dir acc =
 adj :: Pos -> Dir -> Pos
 adj (x,y) = \case L -> (x-1,y); R -> (x+1,y); U -> (x,y-1); D -> (x,y+1)
 
---newtype Cost = Cost Int deriving (Show,Num,Eq,Ord)
 type Cost = Int
-
 data Dir = U | D | L | R deriving (Eq,Ord,Show,Hashable,Generic)
 type Pos = (Int,Int)
 type Node = (Pos,Dir)
