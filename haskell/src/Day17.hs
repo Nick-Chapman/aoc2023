@@ -19,14 +19,14 @@ main = do
   _inp <- load "../input/day17.input"
 
   sam1 <- explore Part1 sam
-  --inp1 <- explore Part1 _inp -- approx 90s
+  inp1 <- explore Part1 _inp -- 12s
   sam2 <- explore Part2 sam
-  --inp2 <- explore Part2 _inp -- ages! ~ 40 minutes ?
+  --inp2 <- explore Part2 _inp -- 138s
 
   print ("day16, part1 (sam)", check 102 $ sam1)
-  --print ("day16, part1", check 817 $ inp1)
+  print ("day16, part1", check 817 $ inp1)
   print ("day16, part2 (sam)", check 94 $ sam2)
-  --print ("day16, part2", check 925 $ part2 inp)
+  --print ("day16, part2", check 925 $ inp2)
 
   pure ()
 
@@ -47,8 +47,9 @@ explore part grid = do
   let f :: State -> Bool
       f State{q} = case q of [] -> False; (_,(pos,_)):_ -> not (isDone pos)
   let (_pre,post) = span f res
-  -- mapM_ print $ zip [1::Int ..] [ x | State{q=x:_} <- _pre]
-  -- mapM_ print $ zip [1::Int ..] [ x | State{q=x:_} <- take 5 post]
+  --mapM_ print $ zip [1::Int ..] [ x | State{q=x:_} <- _pre]
+  --print (length _pre)
+  --mapM_ print $ zip [1::Int ..] [ x | State{q=x:_} <- take 1 post]
   let State{q} = head post
   let x = head q
   let (Cost res,_) = x
@@ -96,10 +97,10 @@ pushQ :: Q -> (Cost,Node) -> Q
 pushQ q (c,n) =
   case q of
     [] -> [(c,n)]
-    x@(c1,_):q' ->
-      -- TODO: drop node when already exists with a lower cost
+    x@(c1,n1):q' ->
       if c <= c1 then (c,n):q else
-        x : pushQ q' (c,n)
+        if n==n1 then q else
+          x : pushQ q' (c,n)
 
 state0 :: [Node] -> State
 state0 ns = State { v = Set.empty, q = [ (Cost 0, n) | n <- ns ] }
@@ -113,6 +114,9 @@ search step = loop
         [] -> []
         (c1,nodeSelected):q -> do
           if nodeSelected `Set.member` v then loop s { q } else do
-            -- TODO: dont push node when already visited
-            let q' = foldl pushQ q [ ( c1+c2, n') | (n',c2) <- step nodeSelected ]
+            let q' = foldl pushQ q
+                  [ ( c1+c2, n')
+                  | (n',c2) <- step nodeSelected
+                  , n' `Set.notMember` v
+                  ]
             loop State { v = Set.insert nodeSelected v, q = q' }
