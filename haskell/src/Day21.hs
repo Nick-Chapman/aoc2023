@@ -34,13 +34,42 @@ main = do
   i64 <- walk 64 inp
   print ("day21, part1", check 3841 $ i64)
 
-  x <- walk 500 sam
-  print (check 167004 x)
+  s2a <- calc 500 sam
+  print ("day21, part2 (500)", check 167004 $ s2a)
+  s2b <- calc 1000 sam
+  print ("day21, part2 (1000)", check 668697 $ s2b)
+  s2c <- calc 5000 sam
+  print ("day21, part2 (5000)", check 16733044 $ s2c)
 
-  y <- walk 26501365 inp -- hmm, dont think this will complete!
-  print y
+  res <- calc 26501365 inp
+  print ("day21, part2", check 636391426712747 $ res)
 
-  pure ()
+
+calc :: Int -> GardenMap -> IO Int
+calc n gm@GardenMap {w,h} = do
+  --print ("n",n)
+  if w /= h then error "w/=h" else do
+    let r = 4*w
+    --print ("r",r)
+    let (d,m) = (n `div` r, n `mod` r)
+    --print ("d/m",d,m)
+    let (i1,i2,i3,_i4) = (m+r, m+2*r, m+3*r, m+4*r)
+    --print ("i:",i1,i2,i3,i4)
+    w1 <- walk i1 gm
+    w2 <- walk i2 gm
+    w3 <- walk i3 gm
+    --w4 <- walk _i4 gm
+    let w4 = 0
+    --print ("w:",w1,w2,w3,w4)
+    let (x1,x2,x3) = (w2-w1,w3-w2,w4-w3)
+    --print ("x",x1,x2,x3)
+    let (y1,_y2) = (x2-x1,x3-x2)
+    --if y1 /= _y2 then error "y1/=y2" else do
+    --print ("y",y1,y2)
+    --print (m+d*r)
+    let res = w1 + (d-1)*x1 + ((d-2)*(d-1) `div` 2) * y1
+    pure res
+
 
 walk :: Int -> GardenMap -> IO Int
 walk n GardenMap {w,h,rocks,start} = do
@@ -51,7 +80,7 @@ walk n GardenMap {w,h,rocks,start} = do
 
     loop :: Int -> (Int,Int) -> Set Pos -> Set Pos -> IO Int
     loop i (c1,c2) last this = do
-      if i `mod` 100 == 0 && i >0 then print (i,(c1,c2)) else pure ()
+      --if i `mod` 1000 == 0 && i >0 then print (i,(c1,c2)) else pure ()
       if i == n then pure c2 else do
         let next = Set.fromList
               [ p2
