@@ -1,9 +1,13 @@
 
 module Day23 (main) where
 
-import Misc (check,look)
+import Data.Maybe (maybeToList) --,catMaybes)
+import Data.Set (Set)
+import Data.Map (Map)
+import Misc (check)
 import Par4 (Par,parse,separated,nl,lit,many,alts)
 import qualified Data.Map as Map
+import qualified Data.Set as Set
 
 gram :: Par Maze
 gram = separated nl (many cell)
