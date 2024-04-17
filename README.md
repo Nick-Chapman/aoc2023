@@ -21,10 +21,12 @@
 [day17](haskell/src/Day17.hs)
 [day18](haskell/src/Day18.hs)
 [day19](haskell/src/Day19.hs)
-[day19](haskell/src/Day20.hs)
-[day19](haskell/src/Day21.hs)
-[day19](haskell/src/Day22.hs)
-[day19](haskell/src/Day23.hs)
+[day20](haskell/src/Day20.hs)
+[day21](haskell/src/Day21.hs)
+[day22](haskell/src/Day22.hs)
+[day23](haskell/src/Day23.hs)
+[day24](haskell/src/Day24.hs)
+[day25](haskell/src/Day25.hs)
 
 ## Descriptions and Solutions:
 - Day 1: Trebuchet?! [desc](https://adventofcode.com/2023/day/1) [solution](haskell/src/Day1.hs)
@@ -46,11 +48,9 @@
 - Day 17: Clumsy Crucible [desc](https://adventofcode.com/2023/day/17) [solution](haskell/src/Day17.hs)
 - Day 18: Lavaduct Lagoon [desc](https://adventofcode.com/2023/day/18) [solution](haskell/src/Day18.hs)
 - Day 19: Aplenty [desc](https://adventofcode.com/2023/day/19) [solution](haskell/src/Day19.hs)
-
-
-WIP
-
-- Day 20: Pulse Propagation [desc](https://adventofcode.com/2023/day/20) [solution](haskell/src/Day20.hs)
+- Day 20: Pulse Propagation [desc](https://adventofcode.com/2023/day/20) [solution](haskell/src/Day20.hs) (Part1 only)
 - Day 21: Step Counter [desc](https://adventofcode.com/2023/day/21) [solution](haskell/src/Day21.hs)
 - Day 22: Sand Slabs [desc](https://adventofcode.com/2023/day/22) [solution](haskell/src/Day22.hs)
-- Day 23: A Long Walk [desc](https://adventofcode.com/2023/day/23) [solution](haskell/src/Day23.hs)
+- Day 23: A Long Walk [desc](https://adventofcode.com/2023/day/23) [solution](haskell/src/Day23.hs) (Part1 only)
+- Day 24: Never Tell Me The Odds [desc](https://adventofcode.com/2023/day/24) [solution](haskell/src/Day24.hs) (Part1 only)
+- Day 25: Snowverload [desc](https://adventofcode.com/2023/day/25) [solution](haskell/src/Day25.hs)
