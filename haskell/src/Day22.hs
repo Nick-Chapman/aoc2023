@@ -1,7 +1,6 @@
 
 module Day22 (main) where
 
-import Data.Array (Array,array,(!))
 import Data.List (sortBy,nub)
 import Data.Map (Map)
 import Data.Ord (comparing)
@@ -38,16 +37,16 @@ type Pos3 = (Int,Int,Int)
 main :: IO ()
 main = do
   let load x = parse gram <$> readFile x
-  _sam <- load "../input/day22-sample.input"
-  _inp <- load "../input/day22.input"
-  s <- part1 _sam
-  print ("day22, part1 (sam)", check 5 $ s)
-  i <- part1 _inp
-  print ("day22, part1", check 457 $ i)
-  s2 <- part2 _sam
+  sam <- load "../input/day22-sample.input"
+  inp <- load "../input/day22.input"
+  s1 <- part1 sam
+  print ("day22, part1 (sam)", check 5 $ s1)
+  i1 <- part1 inp
+  print ("day22, part1", check 457 $ i1)
+  s2 <- part2 sam
   print ("day22, part2 (sam)", check 7 $ s2)
-  i2 <- part2 _inp
-  print ("day22, part2", check 110803 $ i2) -- WRONG -- too high
+  i2 <- part2 inp
+  print ("day22, part2", check 79122 $ i2)
 
 newtype Piece = Piece Int deriving (Eq,Ord,Ix)
 instance Show Piece where
@@ -75,37 +74,6 @@ part1 :: Spec -> IO Int
 part1 spec@(Spec lines) = do
   let n = length $ nub [ b | (_,[b]) <- calcSupport spec ]
   pure (length lines - n)
-
-
-part2 :: Spec -> IO Int
-part2 spec = do
-  let sups = calcSupport spec
-  --mapM_ print sups
-  let iv = collate [ (b,a) | (a,bs) <-sups, b <- bs ]
-  --putStrLn ""
-  --mapM_ print iv
-  let m :: Map Piece [Piece] = Map.fromList iv
-  let all = [ p | (p,_) <- sups ]
-  let
-    -- get wong answer fast!
-    a :: Array Piece (Set Piece)
-    a = array (minimum all, maximum all) [ (p, supported p) | p <- all ]
-
-    supported :: Piece -> Set Piece
-    supported x =
-        case Map.lookup x m of
-          Nothing -> Set.empty
-          Just ys -> Set.unions [ Set.insert y $ a!y | y <- ys ]
-  --let all = [ p | (p,_) <- sups ]
-  --let xs = [ (p,supported p) | p <- all ]
-  --putStrLn ""
-  --mapM_ print xs
-  let critical = nub [ b | (_,[b]) <- calcSupport spec ]
-  let xs = [ Set.size (supported p) | p <- critical ]
-  --mapM_ print (zip [1::Int ..] xs)
-  let n = sum xs
-  --print ("sum",n)
-  pure n
 
 type Sup = (Piece,[Piece]) -- (a,bs) : a rests on all of bs
 
@@ -154,3 +122,42 @@ addLine Classified{xy=(x0,y0),dim,len} piece m = do
   let h' = h + d
   let onPs :: [Piece] = [ p | xy <- xys, (n,Just p) <- [look xy], n==h ]
   (foldl (\m xy -> Map.insert xy (h',piece) m) m xys, onPs)
+
+
+part2 :: Spec -> IO Int
+part2 spec = do
+  let sup = calcSupport spec
+  let all = map fst sup
+  res <- sequence [ countFalls piece sup | piece <- all ]
+  pure (sum res)
+
+type SupM = Map Piece (Set Piece)
+
+countFalls :: Piece -> [Sup] -> IO Int
+countFalls piece initialSups = loop 0 Set.empty [piece] sup0
+  where
+    sup0 :: SupM -- supported by
+    sup0 = Map.fromList [ (a,Set.fromList bs) | (a,bs) <- initialSups ]
+
+    supports :: Piece -> [Piece]
+    supports p = maybe [] id $ Map.lookup p inv
+      where
+        inv = Map.fromList $ collate [ (b,a)
+                                     | (a,bs) <- initialSups, b <- bs ]
+
+    loop :: Int -> Set Piece -> [Piece] -> SupM -> IO Int
+    loop i acc frontier sup = do
+      case frontier of
+        [] -> pure (Set.size acc - 1)
+        f1:frontier -> inner frontier sup (supports f1)
+          where
+            inner :: [Piece] -> SupM -> [Piece] -> IO Int
+            inner frontier sup = \case
+              [] -> loop (i+1) (Set.insert f1 acc) frontier sup
+              x:xs -> do
+                let ys = maybe (error "sup") id (Map.lookup x sup)
+                let ys' = Set.delete f1 ys
+                let sup' = Map.insert x ys' sup
+                if Set.null ys'
+                  then inner (x:frontier) sup' xs
+                  else inner frontier sup' xs
