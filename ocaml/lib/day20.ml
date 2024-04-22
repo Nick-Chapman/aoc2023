@@ -169,7 +169,6 @@ let set_state_node : state -> name -> node -> state =
   fun (STATE (m,l,h)) name node ->
   STATE (M.add name node m, l, h)
 
-
 let count_pulse : state -> event -> state =
   fun (STATE(m,l,h)) (EVENT(_,b,_)) ->
   let (l,h) = if b then (l,h+1) else (l+1,h) in
@@ -181,12 +180,8 @@ let step : spec -> state * event -> state * event list =
   let s = count_pulse s e in
   let EVENT(source,bool,target) = e in
   match target with
-  | "rx" ->
-     (*printf "(rx: %b)\n" bool;*)
-     (s,[])
-  | "output" ->
-     (*printf "(OUTPUT: %b)\n" bool;*)
-     (s,[])
+  | "output" -> (s,[])
+  | "rx" -> (s,[])
   | _ ->
      let rhss = lookup_rhss spec target in
      let n = lookup_state_node s target in
@@ -212,44 +207,60 @@ let step : spec -> state * event -> state * event list =
         let events = List.map (fun x -> EVENT (target,v,x)) rhss in
         (s,events)
 
-let sim_one_button_press : spec -> state -> state =
-  fun spec ->
+let sim_one_button_press : (event -> bool) -> spec -> state -> (state*bool) =
+  fun stop spec ->
   let rec loop s =
     function
-    | [] -> s
+    | [] -> (s,true)
     | e1::es ->
-       let (s,esMore) = step spec (s,e1) in
-       loop s (es @ esMore)
+       if stop e1 then (s,false)
+       else
+         let (s,esMore) = step spec (s,e1) in
+         loop s (es @ esMore)
   in
   let event0 = EVENT ("button",false,"broadcaster") in
   fun s ->
   loop s [event0]
 
-let sim_many_button_presses : spec -> int -> state -> state =
-  fun spec ->
-  let rec loop n s =
-    if n == 0 then s else
-      (*let () = printf "----------\n" in
-      let () = printf "(PRESS %d)\n" n in*)
-      let s = sim_one_button_press spec s in
-      loop (n-1) s
-  in
-  loop
-
 let part1 : string -> int =
   fun filename ->
   let spec0 = parse_spec filename in
-  (*let () = _print_spec0 spec0 in*)
   let s0 = make_init_state spec0 in
   let spec = make_spec spec0 in
-  let STATE(_,l,h) = sim_many_button_presses spec 1000 s0 in
-  (*printf "final-pulse-count: low=%d, high=%d\n" l h;*)
-  let res = l * h in
-  res
+  let stop _ = false in
+  let rec loop n s =
+    if n == 0 then s else
+      let (s,continue) = sim_one_button_press stop spec s in
+      if continue then loop (n-1) s else s
+  in
+  let STATE(_,l,h) = loop 1000 s0 in
+  l * h
 
+let part2 : string list -> string -> int =
+  fun subgoals filename ->
+  let spec0 = parse_spec filename in
+  let s0 = make_init_state spec0 in
+  let spec = make_spec spec0 in
+  let steps_to_goal goal =
+    let rec loop i s =
+      let stop =
+        fun (EVENT(_,bool,name)) ->
+        if name = goal
+        then not bool
+        else false
+      in
+      let (s,continue) = sim_one_button_press stop spec s in
+      if continue then loop (i+1) s else i+1
+    in
+    loop 0 s0
+  in
+  List.fold_left ( * ) 1 (List.map steps_to_goal subgoals)
 
 let main() =
   printf "day20, part1 (samA): %d\n" (check 32000000 (part1 "../input/day20-sample1.input"));
   printf "day20, part1 (samB): %d\n" (check 11687500 (part1 "../input/day20-sample2.input"));
   printf "day20, part1 %d\n" (check 821985143 (part1 "../input/day20.input"));
+
+  let subgoals = ["jm"; "rh"; "jg"; "hf"] in
+  printf "day20, part2 %d\n" (check 240853834793347 (part2 subgoals"../input/day20.input"));
   ()
