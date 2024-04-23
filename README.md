@@ -31,6 +31,7 @@
 ## My Ocaml solutions for Advent of Code 2023
 
 [day20](ocaml/lib/day20.ml)
+[day23](ocaml/lib/day23.ml)
 
 ## Descriptions and Solutions:
 - Day 1: Trebuchet?! [desc](https://adventofcode.com/2023/day/1) [solution](haskell/src/Day1.hs)
@@ -57,6 +58,8 @@
 [ocaml solution](ocaml/lib/day20.ml)
 - Day 21: Step Counter [desc](https://adventofcode.com/2023/day/21) [solution](haskell/src/Day21.hs)
 - Day 22: Sand Slabs [desc](https://adventofcode.com/2023/day/22) [solution](haskell/src/Day22.hs)
-- Day 23: A Long Walk [desc](https://adventofcode.com/2023/day/23) [solution](haskell/src/Day23.hs) (Part1 only)
+- Day 23: A Long Walk [desc](https://adventofcode.com/2023/day/23)
+[haskell solution](haskell/src/Day23.hs) (Part1 only)
+[ocaml solution](ocaml/lib/day23.ml)
 - Day 24: Never Tell Me The Odds [desc](https://adventofcode.com/2023/day/24) [solution](haskell/src/Day24.hs) (Part1 only)
 - Day 25: Snowverload [desc](https://adventofcode.com/2023/day/25) [solution](haskell/src/Day25.hs)

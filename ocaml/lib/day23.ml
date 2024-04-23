@@ -4,12 +4,9 @@ open Printf
 exception Panic of string
 let panic s = raise (Panic s)
 
-let maximum : int list -> int = function
-  | [] -> panic "maximum"
-  | x::xs -> List.fold_left max x xs
-
-let sum : int list -> int = function
-  | xs -> List.fold_left (+) 0 xs
+let check : int -> int -> int =
+  fun a b ->
+  if a = b then a else panic (sprintf "check failed: %d not the same as %d" a b)
 
 let upto : int -> int -> int list =
   fun i j ->
@@ -89,7 +86,7 @@ let show_edge (n,pos) = sprintf "--[%d]-> %s" n (show_pos pos)
 
 type graph = (pos * edge list) list
 
-let print_graph : graph -> unit =
+let _print_graph : graph -> unit =
   fun g ->
   List.iter (fun (p,es) ->
       printf "%s\n" (show_pos p);
@@ -190,9 +187,10 @@ end
 
 module M = Map.Make(Pos)
 
-let part1 : pos -> graph -> int =
-  fun goal g ->
-  let start = (1,0) in
+module Set = Set.Make(Pos)
+
+let longest_path : graph -> pos -> pos -> int =
+  fun g start goal ->
   let m : edge list M.t = M.of_list g in
   let look : pos -> edge list =
     fun pos ->
@@ -200,22 +198,71 @@ let part1 : pos -> graph -> int =
     | None -> panic "look"
     | Some es -> es
   in
-  let rec longest : pos -> int =
-    fun p ->
-    let res =
-      if p = goal then 0 else
-        maximum (List.map (fun (n,p) -> n + longest p) (look p))
-    in
-    res
+  let rec trav : best:int -> Set.t -> int -> pos -> (best:int -> int) -> int =
+    fun ~best visited len pos k ->
+    if pos = goal
+    then
+      if len<best
+      then k ~best
+      else
+        (*let () = printf "NEW best=%d\n%!" len in*)
+        k ~best:len
+    else
+      if Set.mem pos visited then k ~best else
+        let visited = Set.add pos visited in
+        let rec inner : best:int -> (best:int -> int) -> edge list -> int =
+          fun ~best k ->
+          function
+          | [] -> k ~best
+          | (n,dest)::es -> trav ~best visited (len+n) dest (fun ~best -> inner ~best k es)
+        in
+        inner ~best k (look pos)
   in
-  longest start
+  trav ~best:0 Set.empty 0 start (fun ~best -> best)
+
+let both_ways : graph -> graph =
+  let rec loop : edge list M.t -> graph -> edge list M.t =
+    fun acc ->
+    function
+    | [] -> acc
+    | (src,es0)::gRest ->
+       let rec inner : edge list M.t -> edge list -> edge list M.t =
+         fun acc ->
+         function
+         | [] -> loop acc gRest
+         | (len,dest)::es ->
+            let old = match M.find_opt dest acc with | None -> [] | Some xs -> xs in
+            let acc = M.add dest ((len,src)::old) acc in (* add reverse edge here *)
+            inner acc es
+       in
+       inner acc es0
+  in
+  fun g ->
+  let acc : edge list M.t = M.of_list g in
+  M.to_list (loop acc g)
+
+let part1 : world -> int =
+  fun world ->
+  let g = explore_world world in
+  let goal = goal world in
+  let start = (1,0) in
+  longest_path g start goal
+
+let part2 : world -> int =
+  fun world ->
+  let g = explore_world world in
+  let g = both_ways g in
+  let goal = goal world in
+  let start = (1,0) in
+  longest_path g start goal
 
 let main() =
-  printf "day23...\n";
-  let w = parse "../input/day23-sample.input" in
-  _print_world w;
-  let g = explore_world w in
-  print_graph g;
-  let res = part1 (goal w) g in
-  printf "part1=%d\n" res;
+  let sam = parse "../input/day23-sample.input" in
+  (*_print_world sam;*)
+  (*_print_graph (explore_world sam);*)
+  let inp = parse "../input/day23.input" in
+  printf "day23, part1 (sam): %d\n%!" (check 94 (part1 sam));
+  printf "day23, part1: %d\n%!" (check 2018 (part1 inp));
+  printf "day23, part2 (sam): %d\n%!" (check 154 (part2 sam));
+  printf "day23, part2: %d\n%!" (check 6406 (part2 inp));
   ()
