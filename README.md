@@ -61,5 +61,5 @@
 - Day 23: A Long Walk [desc](https://adventofcode.com/2023/day/23)
 [haskell solution](haskell/src/Day23.hs) (Part1 only)
 [ocaml solution](ocaml/lib/day23.ml)
-- Day 24: Never Tell Me The Odds [desc](https://adventofcode.com/2023/day/24) [solution](haskell/src/Day24.hs) (Part1 only)
+- Day 24: Never Tell Me The Odds [desc](https://adventofcode.com/2023/day/24) [solution](haskell/src/Day24.hs)
 - Day 25: Snowverload [desc](https://adventofcode.com/2023/day/25) [solution](haskell/src/Day25.hs)
