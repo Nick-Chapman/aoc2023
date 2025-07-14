@@ -25,7 +25,7 @@ dependencies:
 - transformers
 - unordered-containers
 - word8
-- EarleyM
+#- EarleyM
 
 default-extensions:
 - BangPatterns
@@ -48,7 +48,7 @@ default-extensions:
 - UndecidableInstances
 
 ghc-options:
-- -Werror
+#- -Werror
 - -Wall
 - -Wno-name-shadowing
 
