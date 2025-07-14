@@ -12,8 +12,9 @@ ghc-version:
 
 ghc-options:
   echo -Wall >>ghc-options
-  #echo -Werror >>ghc-options #TODO: avoid use of partial head/tail
   echo -Wno-name-shadowing >>ghc-options
+  echo -Wno-x-partial >>ghc-options #head/tail
+  echo -Werror >>ghc-options
 
 default-extensions:
   echo DuplicateRecordFields >>default-extensions

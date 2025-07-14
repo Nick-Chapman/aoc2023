@@ -48,9 +48,10 @@ default-extensions:
 - UndecidableInstances
 
 ghc-options:
-#- -Werror
+- -Werror
 - -Wall
 - -Wno-name-shadowing
+- -Wno-x-partial #head/tail
 
 library:
   source-dirs: src
