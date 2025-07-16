@@ -2,7 +2,7 @@
 executable-name:
   echo aoc.exe > executable-name
 
-include ../../../jenga2/rulelib/haskell.jenga
+include ../../../jenga/rulelib/haskell.jenga
 
 main-entry:
   echo Advent2023 > main-entry
