@@ -27,5 +27,5 @@ pkgdb:
 
 packages:
   touch packages
-  echo extra-1.7.16-B5Q94fSEKvx4iqIPZo14xg >>packages
-  echo unordered-containers-0.2.20-FKYGOSJUYSH23I6ihvXyfy >>packages
+  echo extra >> packages
+  echo unordered-containers >> packages
