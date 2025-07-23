@@ -7,45 +7,24 @@ maintainer:          nic@amadido.co.uk
 github:              Nick-Chapman/aoc2023.git
 
 dependencies:
-- ansi-terminal
 - array
-- async
 - base >= 4.7 && < 5
-- bytestring
 - clock
 - containers
-- containers
 - extra
-- haskeline
 - hashable
-- mtl
-- split
-- text
-- time
-- transformers
 - unordered-containers
-- word8
-#- EarleyM
 
 default-extensions:
-- BangPatterns
 - DeriveGeneric
 - DuplicateRecordFields
-- EmptyCase
-- FlexibleContexts
 - GADTs
 - GeneralizedNewtypeDeriving
-- InstanceSigs
 - LambdaCase
 - MultiWayIf
 - NamedFieldPuns
-- NondecreasingIndentation
 - NumericUnderscores
-- RankNTypes
 - ScopedTypeVariables
-- TypeApplications
-- TypeFamilies
-- UndecidableInstances
 
 ghc-options:
 - -Werror
