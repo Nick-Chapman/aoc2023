@@ -1,28 +1,27 @@
 
 executable-name:
-  echo aoc.exe > executable-name
+  echo aoc.exe > $@
 
 include ../../../jenga/rulelib/haskell.jenga
 
 main-entry:
-  echo Advent2023 > main-entry
+  echo Advent2023 > $@
 
 ghc-version:
-  echo 9.8.4 > ghc-version
+  echo 9.8.4 > $@
 
 ghc-options:
-  echo -Wall >>ghc-options
-  echo -Wno-name-shadowing >>ghc-options
-  echo -Wno-x-partial >>ghc-options #head/tail
-  echo -Werror >>ghc-options
+  echo -Wall >> $@
+  echo -Wno-name-shadowing >> $@
+  echo -Wno-x-partial >> $@ #head/tail
+  echo -Werror >> $@
 
 default-extensions:
-  echo DuplicateRecordFields >>default-extensions
-  echo GADTs >>default-extensions
-  echo LambdaCase >>default-extensions
-  echo MultiWayIf >>default-extensions
+  echo DuplicateRecordFields >> $@
+  echo GADTs >> $@
+  echo LambdaCase >> $@
+  echo MultiWayIf >> $@
 
 packages:
-  touch packages
-  echo extra >> packages
-  echo unordered-containers >> packages
+  echo extra >> $@
+  echo unordered-containers >> $@
